@@ -2,18 +2,7 @@ window.onload = init;
 
 flag = false;
 
-var Parser = function () {
-	Parser.prototype.parseValue = function (val) {
-		var parts = val.split(" ");
-		return parts;
-	}
-	
-	Parser.prototype.getDisplayBoxInput = function() {
-		displayBoxValue = document.getElementById("display_box").value;
-		return displayBoxValue;
-	}
-}
-var parser = new Parser();
+
 var Calculator = function() {
 	Calculator.prototype.getInput = function () {
 		if (flag) {
@@ -28,7 +17,7 @@ var Calculator = function() {
 			var displayBoxInput = parser.getDisplayBoxInput();
 			var parts = parser.parseValue (displayBoxValue);
 			console.log(parts);
-			console.log(add(parts));
+			console.log(add(parts[0], parts[2]));
 			clearDisplayBox();
 			setDisplay(add(parts[0], parts[2]) + "");
 			flag = true;
