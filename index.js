@@ -1,5 +1,12 @@
 window.onload = init;
 
+var globals = {
+	displayBox: document.getElementById("display_box"),
+	regexForArthmaticOperations: new RegExp ("[\+-\/\*]"),
+	regexForDigitInLastPlace: new RegExp ("[0-9]$"),
+	regexForArthmaticOperatorInLastPlace: new RegExp("[\+-\/\*\s]$")
+}
+
 flag = false;
 
 
@@ -13,29 +20,65 @@ var Calculator = function() {
 	}
 	
 	function setDisplay(val) {
-		if (val.match("=")) {
+	
+		if ( isDisplayBoxEmpty() ) {
+			if ( globals.regexForArthmaticOperations.test(val) ) 
+				return;
+		}
+		
+		
+		if ( val.match("=") ) {
 			var displayBoxInput = parser.getDisplayBoxInput();
 			var parts = parser.parseValue (displayBoxValue);
 			operateOnInput(getInputArray());
 			flag = true;
 			return;
 		}
+		
 		if (val.match("Clear")) {
 			clearDisplayBox();
 			return;
 		}
-		var displayBox = document.getElementById("display_box");
-		displayBox.value += val + " ";
+		
+		if (globals.regexForArthmaticOperations.test(val) ) {
+			var displayBox = document.getElementById("display_box");
+			displayBox.value += " " + val + " ";
+			return;
+		}
+
+		globals.displayBox.value += val;
 	}
 	
 	function operateOnInput (inputArray) {
 		var sum = 0, a, b;
 		if (parser.parseValue(inputArray)) {
-			
-			return;
+			for (var i=1; i < inputArray.length-1; i += 2) {
+				b = parseInt(inputArray[i+1]);
+				switch (inputArray[i]) {
+					case "+":
+						if (i == 1) {
+							a = parseInt( inputArray[i-1] );
+							sum += add(a,b);
+						} else				
+							sum = add(sum,b);
+						console.log ("iteration " +i+":" + sum );
+						break;
+					case "-":
+						if (i == 1) {
+							a = parseInt( inputArray[i-1] );
+							sum -= subtract(a,b);
+						} else				
+							sum = subtract(sum,b);
+						console.log ("iteration " +i+":" + sum );
+						break;
+					default:
+					
+						break;
+				}
+			}
 		};
 		clearDisplayBox();
-		setDisplay(add(parts[0], parts[2]) + "");
+		setDisplay(sum + "");
 		flag = true;
 		return;
 	}
@@ -47,9 +90,12 @@ var Calculator = function() {
 		return parts;
 	}
 	
+	function isDisplayBoxEmpty () {
+		if (globals.displayBox.value == "") return true; else return false;
+	}
+	
 	function clearDisplayBox () {
-		var displayBox = document.getElementById("display_box");
-		displayBox.value = "";
+		globals.displayBox.value = "";
 	}
 	
 	function add(x,y) {
