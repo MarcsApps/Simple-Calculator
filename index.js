@@ -16,10 +16,7 @@ var Calculator = function() {
 		if (val.match("=")) {
 			var displayBoxInput = parser.getDisplayBoxInput();
 			var parts = parser.parseValue (displayBoxValue);
-			console.log(parts);
-			console.log(add(parts[0], parts[2]));
-			clearDisplayBox();
-			setDisplay(add(parts[0], parts[2]) + "");
+			operateOnInput(getInputArray());
 			flag = true;
 			return;
 		}
@@ -30,7 +27,22 @@ var Calculator = function() {
 		var displayBox = document.getElementById("display_box");
 		displayBox.value += val + " ";
 	}
+	function operateOnInput (inputArray) {
+		parser.parseValue(inputArray);
+	var displayBoxInput = parser.getDisplayBoxInput();
+			var parts = parser.parseValue (displayBoxValue);
+			console.log(parts);
+			console.log(add(parts[0], parts[2]));
+			clearDisplayBox();
+			setDisplay(add(parts[0], parts[2]) + "");
+			flag = true;
+			return;
+	}
 	
+	function getInputArray (){
+	var displayBoxValue = document.getElementById("display_box").value;
+	return displayBoxValue.split(" ");
+	}
 	function clearDisplayBox () {
 		var displayBox = document.getElementById("display_box");
 		displayBox.value = "";
